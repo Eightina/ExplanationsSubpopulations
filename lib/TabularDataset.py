@@ -1,15 +1,16 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder
-from lib.datasets import params_mimic_tab_fair,params_recidivism,params_compas_balanced,params_adult, params_lsac, params_mimic_tab
+from lib.datasets import params_adult_with_test, params_mimic_tab_fair, params_compas_balanced, params_adult, params_lsac, params_mimic_tab
 
 dataset_params = {
     'adult': params_adult,
-    'recidivism': params_recidivism,
+    'adult_cleaned': params_adult_with_test,
+    # 'recidivism': params_recidivism,
     'lsac': params_lsac,
     'mimic_tab': params_mimic_tab,
     'compas_balanced':params_compas_balanced,
-    'mimic_tab_fair_ds':params_mimic_tab_fair,
+    # 'mimic_tab_fair_ds':params_mimic_tab_fair,
 }
 
 """

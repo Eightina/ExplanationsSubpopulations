@@ -13,3 +13,6 @@ fairlearn==0.7.0
 sklearn-pandas==2.2.0
 imbalanced-learn==0.8.0
 aif360==0.4.0
+
+
+# python run.py --dataset adult_cleaned --blackbox_model lr --explanation_type local --explanation_model lime --n_features 5 --model_type sklearn --evaluate_val --seed 1 --output_dir ./output/exp0  

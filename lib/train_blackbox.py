@@ -91,9 +91,9 @@ def get_model(x, y, model_name, scoring = 'roc_auc_ovr', cat_cols = []):
     model_dict["rf"] = GridSearchCV(RandomForestClassifier(), param_grid = {'max_depth': list(range(7))}, **gs_args)
 
     clf = model_dict[model_name]
-
+    print("train blackbox: clf fitting")
     clf.fit(x, y)
-                                    
+    print("train blackbox: clf fitted")                    
     return clf
 
 

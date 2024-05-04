@@ -73,7 +73,7 @@ def maxPairDiff(arr):
 def agg_func(x):
     res = {}
     for met, disp in zip(['ACC', 'AUROC'], ['accuracy', 'auroc']):
-        res[f'{disp}_all'] = res[f'{disp}_all'].iloc[0]
+        res[f'{disp}_all'] = x[f'{disp}_all'].iloc[0]
         res[f'{disp}_min'] = x[met].min()
         res[f'{disp}_minority'] = x.loc[x['n'].idxmin(), met]
         res[f'{disp}_majority'] = x.loc[x['n'].idxmax(), met]

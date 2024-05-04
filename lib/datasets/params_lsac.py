@@ -1,5 +1,6 @@
 # link to file
-link = "/scratch/ssd001/home/aparna/explanations-subpopulations/lib/datasets/lsac.csv"
+# link = "/scratch/ssd001/home/aparna/explanations-subpopulations/lib/datasets/lsac.csv"
+link = "D:/my_programs_git/jtt/lib/datasets/lsac.csv"
 
 # columns
 columns = ['age',

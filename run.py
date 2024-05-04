@@ -66,9 +66,9 @@ def program_config(parser):
     parser.add_argument('--groupdro_eta', type = float, default = 1.)
 
     # reductionist 
-    parser.add_argument('--reductionist_type', type = str, choices = ['EO','DP', 'Acc'], default = 'EO')
-    parser.add_argument('--reductionist_difference_bound', type = float, default = 0.01)
-    parser.add_argument('--reductionist_thres', type = float, default = 0.5)
+    # parser.add_argument('--reductionist_type', type = str, choices = ['EO','DP', 'Acc'], default = 'EO')
+    # parser.add_argument('--reductionist_difference_bound', type = float, default = 0.01)
+    # parser.add_argument('--reductionist_thres', type = float, default = 0.5)
 
     # global decision tree
     parser.add_argument('--tree_depth',type=int, default=7)
@@ -144,7 +144,7 @@ clf, blackbox_pred_val, blackbox_pred_test, blackbox_prob_val, blackbox_prob_tes
                                 X_test, y_train,
                                 y_val_expl, y_test,
                                 cat_cols = TabularDataset.dataset_params[args.dataset].categorical_columns)
-
+print("run.py blackbox train done")
 if args.model_type in ['GroupDRO', 'reductionist']:
     assert args.train_grp_clf
 
@@ -189,9 +189,9 @@ for sset, mat, blackbox_pred, blackbox_prob, ground_truth in zip(ssets, [X_test,
         set_name = sset,
         grp_clf = grp_clf,
         perturb_sigma = args.perturb_sigma,
-        reductionist_type=args.expl_reductionist_type,
-        reductionist_difference_bound=args.expl_reductionist_difference_bound,
-        thresh=args.expl_thresh,
+        # reductionist_type=args.expl_reductionist_type,
+        # reductionist_difference_bound=args.expl_reductionist_difference_bound,
+        # thresh=args.expl_thresh,
         grp_train = balance_grp_expl
         )
     curr_test = mat.copy()

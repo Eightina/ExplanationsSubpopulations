@@ -1,5 +1,6 @@
 # link to file
-link = "/scratch/ssd001/home/aparna/explanations-subpopulations/lib/datasets/compas_two_groups.csv"
+# link = "/scratch/ssd001/home/aparna/explanations-subpopulations/lib/datasets/compas_two_groups.csv"
+link = "D:/my_programs_git/jtt/lib/datasets/compas_two_groups.csv"
 
 # columns
 columns = ['sex','age','race','juv_fel_count','juv_misd_count','juv_other_count','priors_count','c_charge_degree','low_risk']

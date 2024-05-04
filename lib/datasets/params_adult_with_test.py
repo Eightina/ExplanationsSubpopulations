@@ -1,5 +1,6 @@
 # link to file
-link = "/scratch/ssd001/home/aparna/iclr2021/explanations-subpopulations/lib/datasets/adult_all_cleaned.csv"
+# link = "/scratch/ssd001/home/aparna/iclr2021/explanations-subpopulations/lib/datasets/adult_all_cleaned.csv"
+link = "D:/my_programs_git/jtt/lib/datasets/adult_all_cleaned.csv"
 
 # columns
 columns = ['age', 'workclass', 'education', 'marital_status', 'relationship',
