@@ -1,5 +1,7 @@
 # data
 output/
+output_eff/
+output_robust/
 .vscode/
 *.ipynb
 logs/

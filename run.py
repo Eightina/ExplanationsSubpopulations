@@ -31,7 +31,7 @@ def program_config(parser):
                         default='lime', type=str)
     parser.add_argument('--n_features',
                         default=10, type=int)                    
-    parser.add_argument('--model_type', type=str, choices = ['ARL', 'ERM', 'LfF', 'sklearn', 'JTT', 'JointDRO', 'GroupDRO', 'reductionist']) 
+    parser.add_argument('--model_type', type=str, choices = ['IJTT', 'ARL', 'ERM', 'LfF', 'sklearn', 'JTT', 'JointDRO', 'GroupDRO', 'reductionist']) 
     parser.add_argument('--seed', type = int, default = 42)
     parser.add_argument('--experiment', type=str, default = '')
     parser.add_argument('--output_dir', type = Path, required = True)
@@ -145,8 +145,8 @@ clf, blackbox_pred_val, blackbox_pred_test, blackbox_prob_val, blackbox_prob_tes
                                 y_val_expl, y_test,
                                 cat_cols = TabularDataset.dataset_params[args.dataset].categorical_columns)
 print("run.py blackbox train done")
-if args.model_type in ['GroupDRO', 'reductionist']:
-    assert args.train_grp_clf
+# if args.model_type in ['GroupDRO', 'reductionist']:
+#     assert args.train_grp_clf
 
 if args.train_grp_clf:
     for i in g_train.columns:

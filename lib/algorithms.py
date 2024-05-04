@@ -8,6 +8,7 @@ from sklearn.linear_model import Ridge, LogisticRegression
 from lib.utils import GeneralizedCELoss
 from lib import joint_dro
 from fairlearn.reductions import DemographicParity, EqualizedOdds, ErrorRateParity, ExponentiatedGradient
+from imblearn.over_sampling import SMOTE
 
 class ERM(nn.Module):
 
@@ -74,10 +75,8 @@ class ERM(nn.Module):
         val_ds = torch.utils.data.TensorDataset(
             X[val_inds], y[val_inds], sample_weight[val_inds], grp[val_inds])
 
-        train_loader = torch.utils.data.DataLoader(train_ds, batch_size=self.batch_size, shuffle=True,
-                                                   num_workers=1)
-        val_loader = torch.utils.data.DataLoader(val_ds, batch_size=self.batch_size, shuffle=False,
-                                                 num_workers=1)
+        train_loader = torch.utils.data.DataLoader(train_ds, batch_size=self.batch_size, shuffle=True)
+        val_loader = torch.utils.data.DataLoader(val_ds, batch_size=self.batch_size, shuffle=False)
 
         best_loss, best_state = None, None
         es_counter = 0
@@ -241,6 +240,92 @@ class JTT():
 
         m2 = Ridge(alpha=self.C).fit(
             X, y, sample_weight=new_normalized_weights)
+        self.model = m2
+
+    def predict(self, X):
+        return self.model.predict(X)
+
+    def score(self, X, y, sample_weight):
+        return r2_score(y_true=y, y_pred=self.predict(X), sample_weight=sample_weight)
+
+    @property
+    def intercept_(self):
+        return self.model.intercept_
+
+    @property
+    def coef_(self):
+        return self.model.coef_
+
+class IJTT():
+    '''
+    improved Just Train Twice
+    '''
+
+    def __init__(self, hparams):
+        self.hparams = hparams
+        self.thres = hparams['jtt_thres']
+        self.lamb = hparams['jtt_lambda']
+        self.C = hparams['C']
+
+    def fit(self, X, y, sample_weight, grp):
+        if self.hparams['ignore_lime_weights']:
+            sample_weight = np.ones(shape=sample_weight.shape)
+
+        # we use a regressor here since y is in [0, 1] - this is what LIME does
+        m1 = Ridge(alpha=self.C).fit(X, y, sample_weight=sample_weight)
+        
+        # the points which were predicted correctly, won't be upweighted, pred right == 1
+        m1_pred = np.array(m1.predict(X) >= self.thres, dtype=np.int8)==np.array(y >= self.thres, dtype=np.int8)
+        
+        unique_classes = np.unique(y)
+        X_list = []  # 存储每个类别的X
+        y_list = []  # 存储每个类别的y
+        weights_list = []
+        
+        for class_label in unique_classes:
+            # 分组
+            X_class = X[y == class_label]
+            y_class = y[y == class_label]
+            m1_pred_class = m1_pred[y == class_label]
+            
+            # 如果没有负类，不做smote
+            if (m1_pred_class.sum() == len(X_class)):
+                X_list.append(X_class)
+                y_list.append(np.full_like(y_class, class_label))
+                weights_list.append(np.ones_like(y_class))
+                continue
+            elif (m1_pred_class.sum() == 0):
+                X_list.append(X_class)
+                y_list.append(np.full_like(y_class, class_label))
+                weights_list.append(np.full_like(y_class, self.lamb))
+                continue
+
+            # 应用SMOTE
+            if (m1_pred_class.sum() < (len(X_class) - m1_pred_class.sum())): # 如果正类是少数类
+                smote = SMOTE(sampling_strategy="not minority", random_state=42, n_jobs=-1)
+            else:
+                smote = SMOTE(random_state=42, n_jobs=-1)
+            # 根据错分类的进行数据增强，但是记得附上原来的label
+            X_resampled, _ = smote.fit_resample(X_class, m1_pred_class)
+            y_resampled = np.full_like(y_class, class_label)
+            # 存储结果
+            X_list.append(X_resampled)
+            y_list.append(y_resampled)
+            weights_list.append(np.ones_like(y_class))
+
+        # 合并所有分组的数据
+        X_new = np.vstack(X_list)
+        y_new = np.concatenate(y_list)
+        weights_new = np.concatenate(weights_list)
+        
+        # NB: Normalizing weights
+        # Empirically, this does not change results in comparison to just
+        # multiplying both
+        new_normalized_weights=np.multiply(weights_new, sample_weight)
+        new_normalized_weights=new_normalized_weights/np.sum(new_normalized_weights)
+        
+        m2 = Ridge(alpha=self.C).fit(
+            X_new, y_new,sample_weight=new_normalized_weights)
         self.model = m2
 
     def predict(self, X):

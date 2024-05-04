@@ -87,8 +87,8 @@ def get_model(x, y, model_name, scoring = 'roc_auc_ovr', cat_cols = []):
     model_dict["nn"] = GridSearchCV(add_scaler(MLPClassifier(), 
         cat_col_indices = cat_col_indices, 
         all_col_indices=list(range(x.shape[1]))), param_grid = {'clf__hidden_layer_sizes': [(n_hidden, ) for n_hidden in [50, 100, 200]]}, **gs_args)
-    model_dict["xgb"] = GridSearchCV(XGBClassifier(), param_grid = {'max_depth': list(range(7))}, **gs_args)
-    model_dict["rf"] = GridSearchCV(RandomForestClassifier(), param_grid = {'max_depth': list(range(7))}, **gs_args)
+    model_dict["xgb"] = GridSearchCV(XGBClassifier(), param_grid = {'max_depth': list(range(1, 7))}, **gs_args)
+    model_dict["rf"] = GridSearchCV(RandomForestClassifier(), param_grid = {'max_depth': list(range(1, 7))}, **gs_args)
 
     clf = model_dict[model_name]
     print("train blackbox: clf fitting")

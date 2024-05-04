@@ -8,7 +8,7 @@ from functools import partial
 import fairlime
 import fairlime.lime_tabular
 from rulefit import RuleFit
-from lib.algorithms import ERM, ARL, JTT, LfF, JointDRO, GroupDRO, Reductionist
+from lib.algorithms import ERM, ARL, JTT, IJTT, LfF, JointDRO, GroupDRO, Reductionist
 from tqdm import trange
 import shap
 from pygam import LogisticGAM, s, f, terms
@@ -204,6 +204,8 @@ def get_explanation_predictions(
             model_regressor = ARL(hparams)
         elif model_type == 'JTT':
             model_regressor = JTT(hparams)
+        elif model_type == 'IJTT':
+            model_regressor = IJTT(hparams)
         elif model_type == 'LfF':
             model_regressor = LfF(hparams)
         elif model_type is None or model_type == 'sklearn':
